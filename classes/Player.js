@@ -17,14 +17,14 @@ class Player {
 
         this.AnimationEnum = {
             STATIC: 0,
-            IDLING: 1,
+            IDLE: 1,
             WALKING: 2,
             JUMP: 3,
             CROUCH: 4,
             SLIDE: 5
         }
 
-        this.animation = this.AnimationEnum.STATIC;
+        this.animation = this.AnimationEnum.IDLE;
 
         // Animations
         this.driver = new AnimationDriver("Player");
@@ -39,11 +39,13 @@ class Player {
             if (keyIsDown(65) && this.velX > (-1 * this.TOP_SPEED)) {
                 this.accelX = -0.4;
                 canMove = true;
+                this.animation = this.AnimationEnum.STATIC;
             }
             // D - Right
             if (keyIsDown(68) && this.velX < this.TOP_SPEED) {
                 this.accelX = 0.4;
                 canMove = true;
+                this.animation = this.AnimationEnum.STATIC;
             }
 
             if (canMove) {
@@ -52,6 +54,7 @@ class Player {
             
             this.checkBounds();
         } else {
+            this.animation = this.AnimationEnum.IDLE;
             this.accelX = 0;
             if (this.velX != 0) {
                 // this.velX += this.velX > 0? -2 : 2;
