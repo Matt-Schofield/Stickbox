@@ -9,8 +9,11 @@ class Player {
         this.accelX = 1;
         this.accelY = 0;
 
+        this.deccelX = 0.85;
+        this.deccelY = 0.8;
+
         this.canMove = false;
-        this.TOP_SPEED = 5;
+        this.TOP_SPEED = 15;
 
         this.width = 24
         this.height = 50;
@@ -19,21 +22,21 @@ class Player {
     move() {
         if (keyIsPressed === true) {
             // Gotta be a nicer way of handling inputs...
-            this.canMove = false;
+            let canMove = false;
 
             // A - Left
-            if (keyIsDown(65)) {
-                this.accelX = -0.3;
-                this.canMove = true;
+            if (keyIsDown(65) && this.velX > (-1 * this.TOP_SPEED)) {
+                this.accelX = -0.4;
+                canMove = true;
             }
             // D - Right
-            if (keyIsDown(68)) {
-                this.accelX = 0.3;
-                this.canMove = true;
+            if (keyIsDown(68) && this.velX < this.TOP_SPEED) {
+                this.accelX = 0.4;
+                canMove = true;
             }
 
             // && Math.abs(this.velX) < this.TOP_SPEED
-            if (this.canMove) {
+            if (canMove) {
                 this.velX += this.accelX;
             }
             
@@ -41,7 +44,12 @@ class Player {
         } else {
             this.accelX = 0;
             if (this.velX != 0) {
-                this.velX += this.velX > 0? -1 : 1;
+                // this.velX += this.velX > 0? -2 : 2;
+                this.velX *= this.deccelX;
+            }
+
+            if (Math.abs(this.velX) < 1) {
+                this.velX = 0;
             }
         }
 
@@ -60,15 +68,15 @@ class Player {
 
     drawPerson() {
         // Legs
-        line(this.x, CANVAS_Y - this.y, this.x + (this.width / 2), CANVAS_Y - (this.y + 40));
-        line(this.x + this.width, CANVAS_Y - this.y, this.x + (this.width / 2), CANVAS_Y - (this.y + 40));
+        line(this.x, this.y, this.x + (this.width / 2), this.y - 40);
+        line(this.x + this.width, this.y, this.x + (this.width / 2), this.y - 40);
         // Body
-        line(this.x + (this.width / 2), CANVAS_Y - (this.y + 40), this.x + (this.width / 2), CANVAS_Y - (this.y + 80));
+        line(this.x + (this.width / 2), this.y - 40, this.x + (this.width / 2), this.y - 80);
         // Head
-        circle(this.x + (this.width / 2), CANVAS_Y - (this.y + 95), 30);
+        circle(this.x + (this.width / 2), this.y - 95, 30);
         // Arms
-        line(this.x, CANVAS_Y - (this.y + 40), this.x + (this.width / 2), CANVAS_Y - (this.y + 70));
-        line(this.x + this.width, CANVAS_Y - (this.y + 40), this.x + (this.width / 2), CANVAS_Y - (this.y + 70));
+        line(this.x, this.y - 40, this.x + (this.width / 2), this.y - 70);
+        line(this.x + this.width, this.y - 40, this.x + (this.width / 2), this.y - 70);
     }
 
     drawVerbose() {
