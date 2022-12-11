@@ -15,8 +15,19 @@ class Player {
         this.canMove = false;
         this.TOP_SPEED = 15;
 
-        this.width = 24
-        this.height = 50;
+        this.AnimationEnum = {
+            STATIC: 0,
+            IDLING: 1,
+            WALKING: 2,
+            JUMP: 3,
+            CROUCH: 4,
+            SLIDE: 5
+        }
+
+        this.animation = this.AnimationEnum.STATIC;
+
+        // Animations
+        this.driver = new AnimationDriver("Player");
     }
 
     move() {
@@ -35,7 +46,6 @@ class Player {
                 canMove = true;
             }
 
-            // && Math.abs(this.velX) < this.TOP_SPEED
             if (canMove) {
                 this.velX += this.accelX;
             }
@@ -58,25 +68,39 @@ class Player {
 
     checkBounds() {
         if (this.x > CANVAS_X) {
-            this.x = -this.width;
+            this.x = -this.driver.entityWidth;
         }
 
-        if (this.x < -this.width) {
+        if (this.x < -this.driver.entityWidth) {
             this.x = CANVAS_X;
         }
     }
 
     drawPerson() {
-        // Legs
-        line(this.x, this.y, this.x + (this.width / 2), this.y - 40);
-        line(this.x + this.width, this.y, this.x + (this.width / 2), this.y - 40);
-        // Body
-        line(this.x + (this.width / 2), this.y - 40, this.x + (this.width / 2), this.y - 80);
+        this.driver.animateEntity(this.animation, this.x, this.y);
+
+        // Add for easier readability
+        let nodes = this.driver.nodes;
+
         // Head
-        circle(this.x + (this.width / 2), this.y - 95, 30);
-        // Arms
-        line(this.x, this.y - 40, this.x + (this.width / 2), this.y - 70);
-        line(this.x + this.width, this.y - 40, this.x + (this.width / 2), this.y - 70);
+        circle(nodes.head.x, nodes.head.y, 30);
+
+        // Body
+        line(nodes.kneck.x, nodes.kneck.y, nodes.balls.x, nodes.balls.y);    
+
+        // Arms - Upper
+        line(nodes.kneck.x, nodes.kneck.y, nodes.leftElbow.x, nodes.leftElbow.y);
+        line(nodes.kneck.x, nodes.kneck.y, nodes.rightElbow.x, nodes.rightElbow.y);
+        // Arms - Lower
+        line(nodes.leftElbow.x, nodes.leftElbow.y, nodes.leftHand.x, nodes.leftHand.y);
+        line(nodes.rightElbow.x, nodes.rightElbow.y, nodes.rightHand.x, nodes.rightHand.y);
+        
+        // Legs - Upper
+        line(nodes.balls.x, nodes.balls.y, nodes.leftKnee.x, nodes.leftKnee.y);
+        line(nodes.balls.x, nodes.balls.y, nodes.rightKnee.x, nodes.rightKnee.y);
+        // Legs - Lower
+        line(nodes.leftKnee.x, nodes.leftKnee.y, nodes.leftFoot.x, nodes.leftFoot.y);
+        line(nodes.rightKnee.x, nodes.rightKnee.y, nodes.rightFoot.x, nodes.rightFoot.y);
     }
 
     drawVerbose() {
