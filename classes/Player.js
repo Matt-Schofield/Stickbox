@@ -3,6 +3,8 @@ class Player {
         this.x = _x;
         this.y = _y;
 
+        this.dir = 1;
+
         this.velY = 0;
         this.velX = 0;
 
@@ -10,10 +12,10 @@ class Player {
         this.accelY = 0;
 
         this.deccelX = 0.85;
-        this.deccelY = 0.8;
+        this.deccelY = 0.9;
 
         this.canMove = false;
-        this.TOP_SPEED = 15;
+        this.TOP_SPEED = 10;
 
         this.AnimationEnum = {
             STATIC: 0,
@@ -36,20 +38,29 @@ class Player {
             let canMove = false;
 
             // A - Left
+            // D - Right
+            // Ctrl - Crouch
+            // Space - Jump
             if (keyIsDown(65) && this.velX > (-1 * this.TOP_SPEED)) {
                 this.accelX = -0.4;
+                this.dir = -1;
                 canMove = true;
-                this.animation = this.AnimationEnum.STATIC;
-            }
-            // D - Right
-            if (keyIsDown(68) && this.velX < this.TOP_SPEED) {
+                this.animation = this.AnimationEnum.WALKING;
+            } else if (keyIsDown(68) && this.velX < this.TOP_SPEED) {
                 this.accelX = 0.4;
+                this.dir = 1;
                 canMove = true;
-                this.animation = this.AnimationEnum.STATIC;
-            }
+                this.animation = this.AnimationEnum.WALKING;
+            } else if (keyIsDown(17) && !(this.y < CANVAS_Y - 20)) {
+                this.accelX = 0;
+                this.velX = 0
+                canMove = true;
+                this.animation = this.AnimationEnum.CROUCH;
+            } 
 
             if (canMove) {
                 this.velX += this.accelX;
+                this.velY -= this.accelY;
             }
             
             this.checkBounds();
@@ -67,6 +78,7 @@ class Player {
         }
 
         this.x += this.velX;
+        this.y += this.velY;
     }
 
     checkBounds() {
@@ -80,7 +92,7 @@ class Player {
     }
 
     drawPerson() {
-        this.driver.animateEntity(this.animation, this.x, this.y);
+        this.driver.animateEntity(this.animation, this.x, this.y, this.dir);
 
         // Add for easier readability
         let nodes = this.driver.nodes;
@@ -111,5 +123,11 @@ class Player {
         text(`X: ${this.x.toFixed(1)}`, 10, 30);
         text(`Vel X: ${this.velX.toFixed(1)}`, 10, 60);
         text(`Accel X: ${this.accelX.toFixed(1)}`, 10, 90);
+
+        text(`Y: ${this.y.toFixed(1)}`, 120, 30);
+        text(`Vel Y: ${this.velY.toFixed(1)}`, 120, 60);
+        text(`Accel Y: ${this.accelY.toFixed(1)}`, 120, 90);
+
+        text(`Animation: ${this.animation}`, 220, 30);
     }
 }

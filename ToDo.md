@@ -1,9 +1,9 @@
 ## TODO
 * Upper / lower limbs
 * Animation driver:
-    * STATIC
-    * IDLING
+    * Wind-up procedure cycleAnimationFrames()
+    * Reset frame counter on change
     * WALKING
+    * CROUCH WALKING
     * JUMP
-    * CROUCH
     * SLIDE

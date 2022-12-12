@@ -41,7 +41,7 @@ class AnimationDriver {
                 this.nodes = this.setStatic();
                 break;
             case 4:
-                this.nodes = this.cycleAnimationFrames(CROUCHING_FRAMES, 22);
+                this.nodes = this.cycleAnimationFrames(CROUCHING_FRAMES, 40);
                 break;
             case 5:
                 this.nodes = this.setStatic();
@@ -64,7 +64,7 @@ class AnimationDriver {
             this.frameCounter = 0;
         }
 
-        let frame = structuredClone(IDLE_FRAMES[Math.floor(this.frameCounter/speedFactor)]);
+        let frame = structuredClone(frames[Math.floor(this.frameCounter/speedFactor)]);
         this.frameCounter += 1;
 
         return frame;
